@@ -23,7 +23,7 @@ def count_fingers_up(landmarks):
     return fingers
 
 def is_fist(landmarks):
-    return count_fingers_up(landmarks) == 0
+    return count_fingers_up(landmarks) == 1
 
 def main():
     cap = cv2.VideoCapture(0)
@@ -65,8 +65,8 @@ def main():
 
         if hand_center:
             cx, cy = hand_center
-            screen_x = int(cx / w * pyautogui.size().width)
-            screen_y = int((cy / h * 0.8 + 0.1) * pyautogui.size().height)
+            screen_x = int((cx / w * 1.1) * pyautogui.size().width)  
+            screen_y = int((cy / h * 1.1) * pyautogui.size().height)
 
             cursor_history.append((screen_x, screen_y))
             if len(cursor_history) > 8:
