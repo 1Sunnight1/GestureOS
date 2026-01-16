@@ -6,7 +6,7 @@ import sys
 import time
 
 pyautogui.FAILSAFE = True
-pyautogui.PAUSE = 0.01
+#pyautogui.PAUSE = 0.01
 
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
@@ -65,8 +65,8 @@ def main():
 
         if hand_center:
             cx, cy = hand_center
-            screen_x = int((cx / w * 1.1) * pyautogui.size().width)  
-            screen_y = int((cy / h * 1.1) * pyautogui.size().height)
+            screen_x = int((cx / w * 1.15) * pyautogui.size().width)  
+            screen_y = int((cy / h * 1.15) * pyautogui.size().height)
 
             cursor_history.append((screen_x, screen_y))
             if len(cursor_history) > 8:
@@ -83,14 +83,14 @@ def main():
                     pyautogui.click()
                     last_click = current_time
 
-        status = f"ИЩЕМ КИСТЬ"
+        status = f"looking fo a brush"
         color = (0, 255, 255)
         if hand_center:
-            status = f"🖐️ ({fingers_up}/5)" if not is_fist_detected else f"✊ КУЛАК"
+            status = f" ({fingers_up}/5)" if not is_fist_detected else f"fist"
             color = (0, 255, 0) if not is_fist_detected else (0, 0, 255)
 
         cv2.putText(frame, status, (20, 60), cv2.FONT_HERSHEY_SIMPLEX, 1.2, color, 3)
-        cv2.putText(frame, "Q=выход", (20, h-30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
+        cv2.putText(frame, "Q=Exit", (20, h-30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2)
 
         cv2.imshow("GestureOS v2", frame)
         if cv2.waitKey(1) & 0xFF == ord('q'):
