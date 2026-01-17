@@ -6,7 +6,7 @@ import sys
 import time
 
 pyautogui.FAILSAFE = True
-#pyautogui.PAUSE = 0.01
+pyautogui.PAUSE = 0.001
 
 mp_hands = mp.solutions.hands
 mp_drawing = mp.solutions.drawing_utils
@@ -14,16 +14,20 @@ hands = mp_hands.Hands(static_image_mode=False, max_num_hands=1, min_detection_c
 
 def count_fingers_up(landmarks):
     fingers = 0
-    tips = [4, 8, 12, 16, 20]
-    if landmarks[4].x < landmarks[3].x:
+    #большой 
+    if landmarks[4].x < landmarks[3].x or landmarks[4].x > landmarks[20].x:
         fingers += 1
-    for tip in tips[1:]:
-        if landmarks[tip].y < landmarks[tip-2].y:
-            fingers += 1
+    
+    if landmarks[8].y < landmarks[6].y:   fingers += 1  # Указательный
+    if landmarks[12].y < landmarks[10].y: fingers += 1  # Средний
+    if landmarks[16].y < landmarks[14].y: fingers += 1  # Безымянный
+    if landmarks[20].y < landmarks[18].y: fingers += 1  # Мизинец
+    
     return fingers
 
+
 def is_fist(landmarks):
-    return count_fingers_up(landmarks) == 1
+    return count_fingers_up(landmarks) <= 1
 
 def main():
     cap = cv2.VideoCapture(0)
@@ -79,11 +83,11 @@ def main():
             if is_fist_detected:
                 current_time = time.time()
                 if current_time - last_click > 0.5:
-                    print("🖱️ КЛИК!")
+                    print(" КЛИК!")
                     pyautogui.click()
                     last_click = current_time
 
-        status = f"looking fo a brush"
+        status = f"looking fo a hand"
         color = (0, 255, 255)
         if hand_center:
             status = f" ({fingers_up}/5)" if not is_fist_detected else f"fist"
